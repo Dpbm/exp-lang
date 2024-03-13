@@ -15,13 +15,17 @@ func main(){
 
 
   var file string = os.Args[1]
-  data, err := os.ReadFile(file)
+  file_o, err := os.Open(file)
   
   if err != nil {
     fmt.Println("Invalid file!")
     os.Exit(1)
   }
 
-  lexer.Lexer(string(data));  
+  tokens := lexer.Lexer(file_o);   
+  defer file_o.Close()
 
+  for _, token := range tokens{
+    fmt.Println(token);
+  } 
 }
