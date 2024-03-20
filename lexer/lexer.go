@@ -12,6 +12,8 @@ const (
   //reserved 
   DECLARE="declare"
   EVALUATE="evaluate"
+  TRUE="true"
+  FALSE="false"
 
   //symbols
   COMMA="comma"
@@ -19,12 +21,15 @@ const (
   E="AND"
   CIRCUMFLEX="XOR"
   EXCLAM="NOT"
+  EQUAL="equal sign"
+  ASSIGN="assign"
+  DIFFERENT="different sign"
  
   PAREN_LEFT="left parenthesis"
   PAREN_RIGHT="right parenthesis"
 
   SHIFT_LEFT="shift left"
-  SHIFT_RIGHT="shift left"
+  SHIFT_RIGHT="shift right"
   
   NUMBER="number"
   VARIABLE="variable"
@@ -55,9 +60,9 @@ func Lexer(file *os.File) []token {
         case '|': tokens = append(tokens, token{ token:"|", token_type: PIPE })
         case '&': tokens = append(tokens, token{ token:"&", token_type: E })
         case '^': tokens = append(tokens, token{ token:"^", token_type: CIRCUMFLEX })
-        case '!': tokens = append(tokens, token{ token:"!", token_type: EXCLAM })
         case ')': tokens = append(tokens, token{ token:")", token_type: PAREN_RIGHT })
         case '(': tokens = append(tokens, token{ token:"(", token_type: PAREN_LEFT })
+        
         case '>':
           next := getNext(actualChar, line);
           if next == ">" {
@@ -65,11 +70,48 @@ func Lexer(file *os.File) []token {
             actualChar += 2
             continue
           }
+        
         case '<':
           next := getNext(actualChar, line);
           if next == "<" {
             tokens = append(tokens, token{ token:"<<", token_type: SHIFT_LEFT })
             actualChar += 2
+            continue
+          }
+        
+        case '=':
+          next := getNext(actualChar, line);
+          if next == "=" {
+            tokens = append(tokens, token{ token:"<<", token_type: EQUAL })
+            actualChar += 2
+            continue
+          }else{
+            tokens = append(tokens, token{ token:"=", token_type: ASSIGN })
+          }
+        
+        case '!':
+          next := getNext(actualChar, line);
+          if next == "=" {
+            tokens = append(tokens, token{ token:"!=", token_type: DIFFERENT })
+            actualChar += 2
+            continue
+          }else{
+            tokens = append(tokens, token{ token:"!", token_type: EXCLAM })
+          }
+        
+        case 'T':
+          substring := line[actualChar:actualChar+4]
+          if substring == "TRUE"{
+            tokens = append(tokens, token{ token:"TRUE", token_type: TRUE })
+            actualChar += 5
+            continue
+          }
+        
+        case 'F':
+          substring := line[actualChar:actualChar+5]
+          if substring == "FALSE"{
+            tokens = append(tokens, token{ token:"FALSE", token_type: FALSE })
+            actualChar += 6
             continue
           }
 

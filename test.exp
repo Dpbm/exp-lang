@@ -1,4 +1,8 @@
 declare a, b, c, test_33, _jdjdj_3, _dddddd_333___
 
-evaluate ( a ^ b)| ( c >> 1) << 33939393993
+a = 13
+c = FALSE
+b = TRUE
 
+evaluate ( a ^ b)| ( c >> 1) << 33939393993 == c 
+evaluate (c & !b) != b
