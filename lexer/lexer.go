@@ -24,6 +24,7 @@ const (
   EQUAL="equal sign"
   ASSIGN="assign"
   DIFFERENT="different sign"
+  MINUS="minus"
  
   PAREN_LEFT="left parenthesis"
   PAREN_RIGHT="right parenthesis"
@@ -62,6 +63,7 @@ func Lexer(file *os.File) []token {
         case '^': tokens = append(tokens, token{ token:"^", token_type: CIRCUMFLEX })
         case ')': tokens = append(tokens, token{ token:")", token_type: PAREN_RIGHT })
         case '(': tokens = append(tokens, token{ token:"(", token_type: PAREN_LEFT })
+        case '-': tokens = append(tokens, token{ token:"-", token_type: MINUS })
         
         case '>':
           next := getNext(actualChar, line);
