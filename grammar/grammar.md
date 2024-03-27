@@ -1,42 +1,24 @@
 # EXP-lang grammar
 
-## Definitions
-
-```
-literals: Numbers, Strings(variables), Booleans
-unary: !, -, etc.
-binary: ==, !=, &, >>, <<, etc.
-grouping: (, )
-```
-
----
-
-## Symbols table
-
-```
-SYMBOLS {
-  literal: "TRUE", "FALSE", NUMBERS, VARIABLES (STRING)
-
-  unary: "-", "!", "declare", "evaluate"
-  
-  binary: "|", "&", "^", ">>", "<<", "=", "==", "!=", ","  
-
-  grouping: "(", ")"
-}
-```
-
----
-
 ## Grammar rules definition
 
 ```
-expression  -> literal
-              | unary
-              | binary
-              | grouping;
-literal     ->  NUMBER | STRING | "TRUE" | "FALSE";
-grouping    -> "(" expression ")";
-unary       -> ( "!" | "-" | "declare" | "evaluate" ) expression;
-binary      -> expression operator expression;
-operator    -> "|" | "&" | "^" | ">>" | "<<" | "=" | "==" | "!=" | ",";
+var    -> STRING; 
+values -> NUMBER | "TRUE" | "FALSE"
+base   ->  values | var | "(" exp ")";
+cmp   -> "==" | "!=";
+bin   -> "|" | "&" | "^" | ">>" | "<<";
+
+dec   -> "declare" dec 
+            | var "," dec
+            | var;
+
+att   -> var "=" base;
+eval  -> "evaluate" exp;
+
+mod   -> ( "!" | "-" ) mod 
+          | base;
+
+exp   ->  mod (cmp | bin) exp
+           | mod; 
 ```
