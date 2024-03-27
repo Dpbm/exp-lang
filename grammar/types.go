@@ -6,10 +6,12 @@ import (
 
 type Expression struct{
   exp any //TODO: improve that
-}
+} 
+
+
 
 type Literal struct{
-  literal lexer.Token 
+  Value any //TODO: improve this one too
 }
 
 type Unary struct{

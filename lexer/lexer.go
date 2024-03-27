@@ -6,7 +6,7 @@ import (
 	"unicode"
 )
 
-func Lexer(file *os.File) []Token {
+func Lexer(file *os.File) *[]Token {
   var tokens []Token = make([]Token, 0);  
   scanner := bufio.NewScanner(file);
 
@@ -19,18 +19,18 @@ func Lexer(file *os.File) []Token {
       char := line[actualChar]
 
       switch(char){
-        case ',': tokens = append(tokens, Token{ symbol:",", lexical_type: COMMA })
-        case '|': tokens = append(tokens, Token{ symbol:"|", lexical_type: PIPE })
-        case '&': tokens = append(tokens, Token{ symbol:"&", lexical_type: E })
-        case '^': tokens = append(tokens, Token{ symbol:"^", lexical_type: CIRCUMFLEX })
-        case ')': tokens = append(tokens, Token{ symbol:")", lexical_type: PAREN_RIGHT })
-        case '(': tokens = append(tokens, Token{ symbol:"(", lexical_type: PAREN_LEFT })
-        case '-': tokens = append(tokens, Token{ symbol:"-", lexical_type: MINUS })
+        case ',': tokens = append(tokens, Token{ Symbol:",", Type: COMMA })
+        case '|': tokens = append(tokens, Token{ Symbol:"|", Type: PIPE })
+        case '&': tokens = append(tokens, Token{ Symbol:"&", Type: E })
+        case '^': tokens = append(tokens, Token{ Symbol:"^", Type: CIRCUMFLEX })
+        case ')': tokens = append(tokens, Token{ Symbol:")", Type: PAREN_RIGHT })
+        case '(': tokens = append(tokens, Token{ Symbol:"(", Type: PAREN_LEFT })
+        case '-': tokens = append(tokens, Token{ Symbol:"-", Type: MINUS })
         
         case '>':
           next := getNext(actualChar, line);
           if next == ">" {
-            tokens = append(tokens, Token{ symbol:">>", lexical_type: SHIFT_RIGHT })
+            tokens = append(tokens, Token{ Symbol:">>", Type: SHIFT_RIGHT })
             actualChar += 2
             continue
           }
@@ -38,7 +38,7 @@ func Lexer(file *os.File) []Token {
         case '<':
           next := getNext(actualChar, line);
           if next == "<" {
-            tokens = append(tokens, Token{ symbol:"<<", lexical_type: SHIFT_LEFT })
+            tokens = append(tokens, Token{ Symbol:"<<", Type: SHIFT_LEFT })
             actualChar += 2
             continue
           }
@@ -46,27 +46,27 @@ func Lexer(file *os.File) []Token {
         case '=':
           next := getNext(actualChar, line);
           if next == "=" {
-            tokens = append(tokens, Token{ symbol:"<<", lexical_type: EQUAL })
+            tokens = append(tokens, Token{ Symbol:"==", Type: EQUAL })
             actualChar += 2
             continue
           }else{
-            tokens = append(tokens, Token{ symbol:"=", lexical_type: ASSIGN })
+            tokens = append(tokens, Token{ Symbol:"=", Type: ASSIGN })
           }
         
         case '!':
           next := getNext(actualChar, line);
           if next == "=" {
-            tokens = append(tokens, Token{ symbol:"!=", lexical_type: DIFFERENT })
+            tokens = append(tokens, Token{ Symbol:"!=", Type: DIFFERENT })
             actualChar += 2
             continue
           }else{
-            tokens = append(tokens, Token{ symbol:"!", lexical_type: EXCLAM })
+            tokens = append(tokens, Token{ Symbol:"!", Type: EXCLAM })
           }
         
         case 'T':
           substring := line[actualChar:actualChar+4]
           if substring == "TRUE"{
-            tokens = append(tokens, Token{ symbol:"TRUE", lexical_type: TRUE })
+            tokens = append(tokens, Token{ Symbol:"TRUE", Type: TRUE })
             actualChar += 5
             continue
           }
@@ -74,7 +74,7 @@ func Lexer(file *os.File) []Token {
         case 'F':
           substring := line[actualChar:actualChar+5]
           if substring == "FALSE"{
-            tokens = append(tokens, Token{ symbol:"FALSE", lexical_type: FALSE })
+            tokens = append(tokens, Token{ Symbol:"FALSE", Type: FALSE })
             actualChar += 6
             continue
           }
@@ -82,7 +82,7 @@ func Lexer(file *os.File) []Token {
         case 'd':
           substring := line[actualChar:actualChar+7]
           if substring == "declare"{
-            tokens = append(tokens, Token{ symbol:"declare", lexical_type: DECLARE })
+            tokens = append(tokens, Token{ Symbol:"declare", Type: DECLARE })
             actualChar += 8
             continue
           }
@@ -90,7 +90,7 @@ func Lexer(file *os.File) []Token {
         case 'e':
           substring := line[actualChar:actualChar+8]
           if substring == "evaluate"{
-            tokens = append(tokens, Token{ symbol:"evaluate", lexical_type: EVALUATE })
+            tokens = append(tokens, Token{ Symbol:"evaluate", Type: EVALUATE })
             actualChar += 9 
             continue
           }
@@ -109,7 +109,7 @@ func Lexer(file *os.File) []Token {
               }
               char = line[actualChar]
             }
-            tokens = append(tokens, Token{ symbol:number, lexical_type: NUMBER})
+            tokens = append(tokens, Token{ Symbol:number, Type: NUMBER})
             continue 
           
           } else if unicode.IsLetter(rune(char)) || char == '_' {
@@ -124,7 +124,7 @@ func Lexer(file *os.File) []Token {
               char = line[actualChar]
             }
 
-            tokens = append(tokens, Token{ symbol:variable, lexical_type: VARIABLE})
+            tokens = append(tokens, Token{ Symbol:variable, Type: VARIABLE})
 
             continue 
 
@@ -136,7 +136,7 @@ func Lexer(file *os.File) []Token {
       actualChar += 1
     }
   }
-  return tokens;
+  return &tokens;
 }
 
 func getNext(i int, line string) string {

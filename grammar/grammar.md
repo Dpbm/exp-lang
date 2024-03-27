@@ -1,24 +1,24 @@
-# EXP-lang grammar
+# expression-lang grammar
 
 ## Grammar rules definition
 
 ```
-var    -> STRING; 
+variable    -> STRING; 
 values -> NUMBER | "TRUE" | "FALSE"
-base   ->  values | var | "(" exp ")";
-cmp   -> "==" | "!=";
-bin   -> "|" | "&" | "^" | ">>" | "<<";
+base   ->  values | variable | "(" expression ")";
+comparation   -> "==" | "!=";
+binary   -> "|" | "&" | "^" | ">>" | "<<";
 
-dec   -> "declare" dec 
-            | var "," dec
-            | var;
+declaration   -> "declare" declaration 
+            | variable "," declaration
+            | variable;
 
-att   -> var "=" base;
-eval  -> "evaluate" exp;
+attribution   -> variable "=" base;
+evaluation  -> "evaluate" expression;
 
-mod   -> ( "!" | "-" ) mod 
+modification   -> ( "!" | "-" ) modification 
           | base;
 
-exp   ->  mod (cmp | bin) exp
-           | mod; 
+expression   ->  modification (comparation | binary) expression
+           | modification; 
 ```

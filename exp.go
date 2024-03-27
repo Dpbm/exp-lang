@@ -4,6 +4,7 @@ import (
   "fmt"
   "os"
   "exp/exp/lexer"
+  "exp/exp/parser"
 )
 
 func main(){
@@ -24,8 +25,9 @@ func main(){
 
   tokens := lexer.Lexer(file_o);   
   defer file_o.Close()
+  parser.Parse(tokens);
 
-  for _, token := range tokens{
-    fmt.Println(token);
-  } 
+  // for _, token := range *tokens{
+  //   fmt.Println(token);
+  // } 
 }

@@ -1,8 +1,8 @@
 package lexer
 
 type Token struct{
-  symbol string
-  lexical_type LexicalTokenType 
+  Symbol string
+  Type LexicalTokenType 
 }
 
 type LexicalTokenType string 
