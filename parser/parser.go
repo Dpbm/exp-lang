@@ -2,74 +2,89 @@ package parser
 
 import (
 	"errors"
-	"exp/exp/grammar"
 	"exp/exp/lexer"
 	"fmt"
-	"strconv"
+	"os"
 )
 
-func Parse(tokens *[]lexer.Token){
-  for _, token := range *tokens{
-    fmt.Println(token.Symbol);
-  }
+func Parse(tokens *[]lexer.Token) Tree {
+  var i uint64  = 0 
+  return expression(tokens, &i);
 }
 
-func values(token lexer.Token) (grammar.Literal, error) {
-  switch token.Type{
-    case lexer.TRUE:
-      return true_token()
-    case lexer.FALSE:
-      return false_token()
-    case lexer.NUMBER:
-      return number_token(token)
-    default:
-      return grammar.Literal{}, errors.New("Invalid values token")
+func expression(tokens *[]lexer.Token, i *uint64) Tree{
+  var tree Tree = Tree{}
+  token := next(tokens, i)
+
+  //variable
+  if(token.Type == lexer.DECLARE){
+    tree.Value = token
+    walk(i)
+    value, err := add_variable(tokens, i)
+    if err != nil{
+      fmt.Println(err);
+      os.Exit(1); 
+    }
+
+    tree.Right = value
   }
+  return tree
 }
 
+func add_variable(tokens *[]lexer.Token, i *uint64) (*Node,error){
+  token := next(tokens, i)
+  previous_token := previous(tokens, i)
+ 
+  switch token.Type {
+    case lexer.COMMA:
+      if(previous_token.Type != lexer.VARIABLE){
+        return nil, errors.New(fmt.Sprintf("invalid ',' after '%s'", previous_token.Symbol))
+      }
 
-func variable(token lexer.Token) (grammar.Literal, error) {
-  if token.Type == lexer.VARIABLE{
-    return variable_token(token)
-  }
-
-  return grammar.Literal{}, errors.New("Invalid variable")
-}
-
-func base(token lexer.Token) (grammar.Literal, error) {
-  switch(token.Type){
-    case lexer.TRUE:
-      return true_token()
-    case lexer.FALSE:
-      return false_token()
-    case lexer.NUMBER:
-      return number_token(token)
     case lexer.VARIABLE:
-      return variable_token(token)
-    case lexer.PAREN_LEFT:
-      //TODO
+      if(previous_token.Type != lexer.COMMA && previous_token.Type != lexer.DECLARE){
+        return nil, errors.New(fmt.Sprintf("invalid '%s' after '%s'", token.Symbol, previous_token.Symbol))
+      }
+  
+    case lexer.END:
+      if(previous_token.Type == lexer.DECLARE){
+        return nil, errors.New("invalid EOF after declare")
+      }
+
     default:
-      return grammar.Literal{}, errors.New("Invalid base token")
+      return nil, errors.New(fmt.Sprintf("invalid token '%s'", token.Symbol))
+    
   }
-}
+  
+  var node Node = Node{}
+  
+  if(token.Type == lexer.END){
+    node.Value = token
+    return &node, nil
+  }
 
-func true_token() (grammar.Literal,error){
-  return grammar.Literal{Value: true},nil
-}
-
-func false_token() (grammar.Literal,error){
-  return grammar.Literal{Value: false},nil
-}
-
-func variable_token(token lexer.Token) (grammar.Literal,error){
-  return grammar.Literal{Value: token.Symbol},nil
-}
-
-func number_token(token lexer.Token) (grammar.Literal, error){
-  value, err := strconv.Atoi(token.Symbol)
+  node.Value = token
+  walk(i)
+  value, err := add_variable(tokens, i)
   if err == nil{
-    return grammar.Literal{Value:value}, nil
+    node.Right = value
+    return &node, nil
   }else{
-    return grammar.Literal{}, errors.New("Error on converting token to int")
+    return nil, err
   }
 }
+
+
+func next(tokens *[]lexer.Token, i *uint64) lexer.Token{
+  return (*tokens)[*i]
+}
+
+func previous(tokens *[]lexer.Token, i *uint64) lexer.Token{
+  return (*tokens)[(*i)-1]
+}
+
+func walk(i *uint64){
+  *i++
+}
+
+

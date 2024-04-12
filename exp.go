@@ -25,9 +25,16 @@ func main(){
 
   tokens := lexer.Lexer(file_o);   
   defer file_o.Close()
-  parser.Parse(tokens);
 
-  // for _, token := range *tokens{
-  //   fmt.Println(token);
-  // } 
+  for _, token := range *tokens{
+    fmt.Println(token);
+  } 
+  tree := parser.Parse(tokens);
+ 
+  node := tree
+  for node.Value.Type != lexer.END {
+    fmt.Println(node.Value.Symbol);
+    node = *node.Right
+  }
+
 }

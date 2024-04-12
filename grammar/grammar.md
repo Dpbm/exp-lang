@@ -2,23 +2,17 @@
 
 ## Grammar rules definition
 
+1. declare variables
+
+
 ```
-variable    -> STRING; 
-values -> NUMBER | "TRUE" | "FALSE"
-base   ->  values | variable | "(" expression ")";
-comparation   -> "==" | "!=";
-binary   -> "|" | "&" | "^" | ">>" | "<<";
+variable      -> STRING 
 
-declaration   -> "declare" declaration 
-            | variable "," declaration
-            | variable;
+add_variable  -> variable, add_variable
+                | variable
+variables     -> "declare" add_variable
 
-attribution   -> variable "=" base;
-evaluation  -> "evaluate" expression;
+expression -> variables
 
-modification   -> ( "!" | "-" ) modification 
-          | base;
 
-expression   ->  modification (comparation | binary) expression
-           | modification; 
-```
+

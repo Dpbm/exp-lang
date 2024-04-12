@@ -32,5 +32,7 @@ const (
   
   NUMBER="number"
   VARIABLE="variable"
+
+  END="EOF"
 )
 

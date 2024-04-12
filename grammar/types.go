@@ -5,8 +5,9 @@ import (
 )
 
 type Expression struct{
-  exp any //TODO: improve that
+  Exp any //TODO: improve that
 } 
+
 
 
 

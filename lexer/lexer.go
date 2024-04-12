@@ -125,17 +125,18 @@ func Lexer(file *os.File) *[]Token {
             }
 
             tokens = append(tokens, Token{ Symbol:variable, Type: VARIABLE})
-
             continue 
-
         } 
-
-
       }
 
       actualChar += 1
     }
+
+    tokens = append(tokens, Token{ Symbol:"", Type: END})
+
   }
+
+
   return &tokens;
 }
 
